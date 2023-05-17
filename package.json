@@ -5,11 +5,12 @@
   "license": "MIT",
   "dependencies": {
     "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.0",
     "koa-router": "^12.0.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.22"
   },
   "scripts": {
-    "dev": "nodemon ./my-koa-app.js localhost 8080"
+    "dev": "nodemon my-koa-app.js localhost 8080"
   }
 }

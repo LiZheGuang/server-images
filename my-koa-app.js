@@ -1,9 +1,11 @@
 const Koa = require("koa");
 const Router = require("koa-router");
+const mysql = require("mysql");
+
+const { componentRouter } = require("./src/server/orders_all");
 
 const app = new Koa();
 const router = new Router();
-const mysql = require("mysql");
 const { SELECT_ORDERS, SELECT_ORDERS_LIMITS } = require("./src/mysql/order");
 const connection = mysql.createConnection({
   host: "localhost",
@@ -27,27 +29,28 @@ router
     const RESPONE_ORDERS = await SELECT_ORDERS(connection);
 
     ctx.body = RESPONE_ORDERS;
-  })
-  .get("/images-limit", async (ctx, next) => {
-    // GET FENYE
-    let RESPONE_ORDERS;
-
-    if (ctx.query) {
-      // console.log(ctx.query);
-
-      let { page, pageSize } = ctx.query;
-      RESPONE_ORDERS = await SELECT_ORDERS_LIMITS(connection, {
-        page,
-        pageSize,
-      });
-    } else {
-      RESPONE_ORDERS = await SELECT_ORDERS_LIMITS(connection);
-    }
-    ctx.response.set("Content-Type", "application/json");
-
-    ctx.body = RESPONE_ORDERS;
   });
 
-app.use(router.routes()).use(router.allowedMethods());
+router.get("/images-limit", async (ctx, next) => {
+  // GET FENYE
+  let RESPONE_ORDERS;
+
+  if (ctx.query) {
+    // console.log(ctx.query);
+
+    let { page, pageSize } = ctx.query;
+    RESPONE_ORDERS = await SELECT_ORDERS_LIMITS(connection, {
+      page,
+      pageSize,
+    });
+  } else {
+    RESPONE_ORDERS = await SELECT_ORDERS_LIMITS(connection);
+  }
+  ctx.response.set("Content-Type", "application/json");
+
+  ctx.body = RESPONE_ORDERS;
+});
+
+app.use(router.routes()).use(componentRouter.routes()).use(router.allowedMethods());
 console.log("server=>  " + "http://localhost:8080");
 app.listen(8080);
