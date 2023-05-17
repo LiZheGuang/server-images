@@ -1,18 +1,13 @@
 const Koa = require("koa");
 const Router = require("koa-router");
 const mysql = require("mysql");
-
+const bodyParser = require("koa-bodyparser");
 const { componentRouter } = require("./src/server/orders_all");
-
+const { connection } = require("./createConnection");
 const app = new Koa();
 const router = new Router();
 const { SELECT_ORDERS, SELECT_ORDERS_LIMITS } = require("./src/mysql/order");
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "7161089",
-  database: "photo",
-});
+
 router
   .get("/", (ctx, next) => {
     ctx.body = "Hello Koa";
@@ -50,7 +45,10 @@ router.get("/images-limit", async (ctx, next) => {
 
   ctx.body = RESPONE_ORDERS;
 });
-
-app.use(router.routes()).use(componentRouter.routes()).use(router.allowedMethods());
+app.use(bodyParser());
+app
+  .use(router.routes())
+  .use(componentRouter.routes())
+  .use(router.allowedMethods());
 console.log("server=>  " + "http://localhost:8080");
 app.listen(8080);

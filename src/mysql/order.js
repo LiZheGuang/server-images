@@ -1,3 +1,5 @@
+const { connection } = require("../../createConnection");
+
 const SELECT_ORDERS = function (MYSQL_CONTENT) {
   return new Promise((resove, reject) => {
     MYSQL_CONTENT.query("SELECT * FROM orders", (error, results, fields) => {
@@ -28,4 +30,25 @@ const SELECT_ORDERS_LIMITS = function (
   });
 };
 
-module.exports = { SELECT_ORDERS, SELECT_ORDERS_LIMITS };
+const CREATE_USERS = function (username, password) {
+  const uuid = `${Math.random().toString(36).substring(2, 10)}-${Math.random()
+    .toString(36)
+    .substring(2, 6)}-${Math.random()
+    .toString(36)
+    .substring(2, 6)}-${Math.random()
+    .toString(36)
+    .substring(2, 6)}-${Math.random().toString(36).substring(2, 14)}`;
+
+  const query = `INSERT INTO user (username, password, uuid) VALUES ('${username}', '${password}', '${uuid}')`;
+  return new Promise((resove, reject) => {
+    connection.query(query, function (error, results, fields) {
+      if (error) {
+        reject(error);
+        throw error;
+      }
+      resove(results);
+    });
+  });
+};
+
+module.exports = { SELECT_ORDERS, SELECT_ORDERS_LIMITS, CREATE_USERS };
