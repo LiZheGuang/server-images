@@ -2,6 +2,8 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const mysql = require("mysql");
 const bodyParser = require("koa-bodyparser");
+const cors = require('@koa/cors');
+
 const { componentRouter } = require("./src/server/orders_all");
 const { connection } = require("./createConnection");
 const app = new Koa();
@@ -45,7 +47,12 @@ router.get("/images-limit", async (ctx, next) => {
 
   ctx.body = RESPONE_ORDERS;
 });
+
 app.use(bodyParser());
+app.use(cors({
+  credentials: true
+}));
+
 app
   .use(router.routes())
   .use(componentRouter.routes())
