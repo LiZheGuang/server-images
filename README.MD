@@ -12,6 +12,7 @@ desc: koa koa-roter koa-body test 练习 Node 与 KOA 项目
 - 创建用户表与用户信息 ✅ 
   - 用户信息以及uuid ✅
 - jwt设计中间件进行校验
+- 中间件 ✅
 
 
 

@@ -2,17 +2,19 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const mysql = require("mysql");
 const bodyParser = require("koa-bodyparser");
-const cors = require('@koa/cors');
+const cors = require("@koa/cors");
 
 const { componentRouter } = require("./src/server/orders_all");
 const { connection } = require("./createConnection");
+const { Middleware } = require("./src/server/middleware");
 const app = new Koa();
 const router = new Router();
 const { SELECT_ORDERS, SELECT_ORDERS_LIMITS } = require("./src/mysql/order");
 
 router
-  .get("/", (ctx, next) => {
-    ctx.body = "Hello Koa";
+  .get("/", Middleware, (ctx, next) => {
+    // ctx.body = "Hello Koa";
+    ctx.body = { message: "Hello, " + ctx.state.user };
   })
   .get("/about", (ctx, next) => {
     ctx.body = "About Us";
@@ -49,9 +51,12 @@ router.get("/images-limit", async (ctx, next) => {
 });
 
 app.use(bodyParser());
-app.use(cors({
-  credentials: true
-}));
+
+app.use(
+  cors({
+    credentials: true,
+  })
+);
 
 app
   .use(router.routes())

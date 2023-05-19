@@ -1,28 +1,54 @@
 const Router = require("koa-router");
 const jwt = require("jsonwebtoken");
-const { CREATE_USERS } = require("../mysql/order");
+const { CREATE_USERS, USERS_VALIDATION } = require("../mysql/order");
+const { VerifyJwt } = require("./middleware");
+
 const componentRouter = new Router({
   prefix: "/component",
 });
 
-componentRouter.get("/", (ctx, next) => {
+componentRouter.get("/", VerifyJwt, (ctx, next) => {
   // ctx.router available
-  ctx.body = "hi commopone";
+  ctx.body = "hi commopone" + JSON.stringify(ctx.state.user);
 });
-componentRouter.post("/login", (ctx, next) => {
+// 用户身份呢交易
+componentRouter.post("/login", async (ctx, next) => {
   // 获取 post 请求的参数
   const { username, password } = ctx.request.body;
-
-  // 在实际应用中，这里应该从数据库中查询用户数据，并进行密码比对
-  if (username === "admin" && password === "123456") {
-    ctx.body = { success: true, message: "登录成功！" };
+  const users = await USERS_VALIDATION(username, password);
+  const res = JSON.parse(JSON.stringify(users));
+  const len = res.length;
+  if (!len) {
+    ctx.body = {
+      code: 401,
+      message: "查询不到此用户",
+    };
+    return;
   } else {
-    ctx.body = { success: false, message: "用户名或密码错误！" };
+    const user_name = res[0].username;
+    const user_passsword = res[0].password;
+    if (user_name != username || user_passsword != password) {
+      ctx.body = {
+        code: 401,
+        message: "账号密码错误",
+      };
+      return;
+    } else {
+      const token = jwt.sign(
+        { name: username, password: password },
+        "TOP_SECRET"
+      );
+      ctx.body = { code: 200, message: "登录成功", token };
+      return;
+    }
   }
 });
 
 componentRouter.get("/jwt", (ctx, next) => {
-  const token = jwt.sign({ name: "zhaiguang" }, "TOP_SECRET");
+  const token = jwt.sign(
+    { name: "zheguang", password: "a7161089" },
+    "TOP_SECRET"
+  );
   ctx.body = {
     code: 200,
     token: token,

@@ -51,4 +51,24 @@ const CREATE_USERS = function (username, password) {
   });
 };
 
-module.exports = { SELECT_ORDERS, SELECT_ORDERS_LIMITS, CREATE_USERS };
+// 同时查询账号和密码
+const USERS_VALIDATION = function (username, password) {
+  const query = `SELECT id, username, password, uuid, created_at, updated_at
+  FROM photo.user WHERE username = '${username}' LIMIT 1;`;
+  return new Promise((resove, reject) => {
+    connection.query(query, function (error, results, fields) {
+      if (error) {
+        reject(error);
+        throw error;
+      }
+      console.log('查询到的',results)
+      resove(results);
+    });
+  });
+};
+module.exports = {
+  SELECT_ORDERS,
+  SELECT_ORDERS_LIMITS,
+  CREATE_USERS,
+  USERS_VALIDATION,
+};
