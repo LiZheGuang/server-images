@@ -67,7 +67,6 @@ componentRouter.get("/jwtdecode", (ctx, next) => {
 });
 
 // 创建
-
 componentRouter.post("/createUser", async (ctx, next) => {
   // 创建users
   // 获取 post 请求的参数

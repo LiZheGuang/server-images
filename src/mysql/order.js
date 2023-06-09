@@ -66,6 +66,7 @@ const USERS_VALIDATION = function (username, password) {
     });
   });
 };
+
 module.exports = {
   SELECT_ORDERS,
   SELECT_ORDERS_LIMITS,

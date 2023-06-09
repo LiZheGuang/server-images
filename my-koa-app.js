@@ -3,13 +3,24 @@ const Router = require("koa-router");
 const mysql = require("mysql");
 const bodyParser = require("koa-bodyparser");
 const cors = require("@koa/cors");
-
+const views = require("koa-views");
+const path = require("path");
+const serve = require("koa-static");
 const { componentRouter } = require("./src/server/orders_all");
 const { connection } = require("./createConnection");
 const { Middleware } = require("./src/server/middleware");
+const { template } = require("./src/router/template/index");
 const app = new Koa();
 const router = new Router();
 const { SELECT_ORDERS, SELECT_ORDERS_LIMITS } = require("./src/mysql/order");
+// 设置静态资源的路径
+
+app.use(serve(path.join(__dirname, "public")));
+app.use(
+  views(path.join(__dirname, "/views"), {
+    extension: "ejs",
+  })
+);
 
 router
   .get("/", Middleware, (ctx, next) => {
@@ -61,6 +72,7 @@ app.use(
 app
   .use(router.routes())
   .use(componentRouter.routes())
+  .use(template.routes())
   .use(router.allowedMethods());
 console.log("server=>  " + "http://localhost:8080");
 app.listen(8080);
