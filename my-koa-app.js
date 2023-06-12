@@ -10,6 +10,7 @@ const { componentRouter } = require("./src/server/orders_all");
 const { connection } = require("./createConnection");
 const { Middleware } = require("./src/server/middleware");
 const { template } = require("./src/router/template/index");
+const { users } = require("./src/router/users/index");
 const app = new Koa();
 const router = new Router();
 const { SELECT_ORDERS, SELECT_ORDERS_LIMITS } = require("./src/mysql/order");
@@ -26,12 +27,6 @@ router
   .get("/", Middleware, (ctx, next) => {
     // ctx.body = "Hello Koa";
     ctx.body = { message: "Hello, " + ctx.state.user };
-  })
-  .get("/about", (ctx, next) => {
-    ctx.body = "About Us";
-  })
-  .get("/contact", (ctx, next) => {
-    ctx.body = "Contact Us";
   })
   .get("/images", async (ctx, next) => {
     //  GET IMAGES
@@ -73,6 +68,7 @@ app
   .use(router.routes())
   .use(componentRouter.routes())
   .use(template.routes())
+  .use(users.routes())
   .use(router.allowedMethods());
 console.log("server=>  " + "http://localhost:8080");
 app.listen(8080);
