@@ -14,6 +14,75 @@ desc: koa koa-roter koa-body test 练习 Node 与 KOA 项目
 - jwt 设计中间件进行校验
 - 中间件 ✅
 - view 文件支持 EJS 模板
+- RBAC权限模型
+  - role 角色 ✅
+  - permission  权限 ✅
+  - user_role 用户身份对应角色 ✅
+  - role_permission  角色对应权限 ✅
+
+
+## 用户身份权限API
+
+/users  
+用户列表
+  ```json
+  [
+    {
+        "id": 1,
+        "userId": 1,
+        "roleId": 1,
+        "username": "admin1",
+        "uuid": "4775b101-89c9-6704-66b5-fb5eba30c742",
+        "role_name": "admin",
+        "permissions": "1,2,3,4"
+    }
+  ] 
+  ```
+/users/:userid   
+
+用户详情
+
+```json
+{
+    "id": 1,
+    "userId": 1,
+    "roleId": 1,
+    "username": "admin1",
+    "uuid": "4775b101-89c9-6704-66b5-fb5eba30c742",
+    "role_name": "admin",
+    "permissions": "1,2,3,4",
+    "permission_users": [
+        {
+            "id": 1,
+            "name": "create",
+            "description": "Can create new records"
+        },
+        {
+            "id": 2,
+            "name": "read",
+            "description": "Can read existing records"
+        },
+        {
+            "id": 3,
+            "name": "update",
+            "description": "Can update existing records"
+        },
+        {
+            "id": 4,
+            "name": "delete",
+            "description": "Can delete existing records"
+        }
+    ]
+}
+```
+
+POST:/addPerminssion 
+
+@body:  
+ * permissionName:String 
+ * detail:String
+
+增加权限
 
 ## JWT 中间件实现
 
