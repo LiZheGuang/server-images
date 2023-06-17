@@ -139,12 +139,9 @@ const QUERY_USER_LIST = async function (PARAM_QUERY) {
 
 // 增加权限
 const CREQTE_PERMISSION = async function (permissionName, detail) {
-  console.log(permissionName);
-  console.log(detail);
   if (!permissionName || !detail) return { msg: "缺少依赖参数" };
   const SQL_QUERY = `INSERT INTO permission (name,description) VALUES 
   ('${permissionName}','${detail}')`;
-  console.log(SQL_QUERY);
   try {
     await createPromise(SQL_QUERY);
     return { msg: "创建成功" };
