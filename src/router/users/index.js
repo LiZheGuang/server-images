@@ -9,13 +9,15 @@ const {
   QUERY_USER_ROLE,
   QUERY_USER_LIST,
   CREQTE_PERMISSION,
+  ROLE_QULER_PERMISSION,
+  CREATE_ROLE_PERMISSION,
 } = require("../../mysql/order");
 const users = new Router({
   prefix: "/users",
 });
 
 users.get("/", async (ctx, next) => {
-  ctx.body = await QUERY_USER_LIST();
+  ctx.body = await QUERY_USER_LIST(ctx.query);
 });
 
 // 查询detail_users
@@ -44,8 +46,25 @@ users.get("/role_permission", async (ctx) => {
   ctx.body = await SELECT_SQL_LIMITS("role_permission", ctx.query);
 });
 // user_role  用户对应身份
-users.get("/user_role", async (ctx) => {
-  ctx.body = await SELECT_SQL_LIMITS("user_role", ctx.query);
+users.get("/userRole", async (ctx) => {
+  const { roleId } = ctx.query;
+  console.log(roleId,'roleId')
+  if (roleId) {
+    ctx.body = await ROLE_QULER_PERMISSION(roleId);
+  } else {
+    ctx.body = await ROLE_QULER_PERMISSION();
+  }
+});
+
+// 创建身份与权限
+users.post("/createRole", async (ctx) => {
+  const { name, msg, permission } = ctx.request.body;
+
+  await CREATE_ROLE_PERMISSION({ name, msg, permission });
+  ctx.body = {
+    msg: "创建成功",
+    code: 200,
+  };
 });
 
 // 增加角色对应权限
